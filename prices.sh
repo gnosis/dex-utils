@@ -48,4 +48,6 @@ batches=$(echo $trades | jq 'group_by(.tradeBatchId) | map({"batch": .[0].tradeB
 totals=$(echo $batches | jq 'map({batch, buyVolume:([.trades[]|.buy]|add), sellVolume:([.trades[]|.sell]|add)})')
 prices=$(echo $totals | jq 'map(. + {buyPrice:(.sellVolume/.buyVolume), sellPrice:(.buyVolume/.sellVolume)})')
 
+prices=$(echo $prices | jq 'map(. + {batchStart: (.batch * 300)|todate, batchEnd: ((.batch+1)*300)|todate})')
+
 echo $prices | jq -r '(map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.])) as $rows | $cols, $rows[] | @csv'
