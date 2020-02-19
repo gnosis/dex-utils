@@ -8,3 +8,11 @@ total volumes as well as buy and sell prices in CSV format:
 ```
 ./prices.sh DAI USDC
 ```
+
+## Requirements
+
+Install cURL and jq with yout favourite package manager:
+
+```
+sudo apt install curl jq
+```
