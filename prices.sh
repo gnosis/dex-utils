@@ -22,9 +22,7 @@ fi
 graphql () {
 	URL=https://api.thegraph.com/subgraphs/name/gnosis/dfusion
 	curl -s -X POST $URL --data-binary @- << EOF
-{
-	"query": "query { $1 }"
-}
+{ "query": "query { $1 }" }
 EOF
 }
 
@@ -41,7 +39,7 @@ get_token_id () {
 buy_token=$(get_token_id $1)
 sell_token=$(get_token_id $2)
 
-orders=$(graphql "orders(where: {buyToken:\\\"$buy_token\\\", sellToken:\\\"$sell_token\\\"}) { trades { buyVolume, sellVolume, tradeBatchId } }")
+orders=$(graphql "orders(first: 1000,where: {buyToken:\\\"$buy_token\\\", sellToken:\\\"$sell_token\\\"}) { trades { buyVolume, sellVolume, tradeBatchId } }")
 
 trades=$(echo $orders | jq '[.data.orders[].trades[]]')
 batches=$(echo $trades | jq 'group_by(.tradeBatchId) | map({"batch": .[0].tradeBatchId|tonumber, trades:[.[] | {buy:.buyVolume|tonumber,sell:.sellVolume|tonumber}]})')
