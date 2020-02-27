@@ -9,7 +9,7 @@ verbose=""
 balances="y"
 while [[ $# -gt 0 ]]; do
 	case $1 in
-		-o|--owner) owner=$2; shift;;
+		-o|--owner) owner=$(echo "$2" | sed -e 's/\(.*\)/\L\1/'); shift;;
 		--no-balances) balances="";;
 		-v|--verbose) verbose="y";;
 		-h|--help) cat << EOF
@@ -55,18 +55,20 @@ EOF
 	shift
 done
 
-if [[ -z "$CONTRACT" ]]; then
-	CONTRACT="0x6f400810b62df8e13fded51be75ff5393eaa841f"
-fi
-if [[ -z "$ETHEREUM_NODE_URL" ]]; then
-	if [[ -z "$INFURA_PROJECT_ID" ]]; then
-		cat << EOF
+if [[ $balances == "y" ]]; then
+	if [[ -z "$CONTRACT" ]]; then
+		CONTRACT="0x6f400810b62df8e13fded51be75ff5393eaa841f"
+	fi
+	if [[ -z "$ETHEREUM_NODE_URL" ]]; then
+		if [[ -z "$INFURA_PROJECT_ID" ]]; then
+			cat << EOF
 ERROR: Missing ETHEREUM_NODE_URL or INFURA_PROJECT_ID environment variables.
 	   For more information try '$0 --help'
 EOF
-		exit 1
+			exit 1
+		fi
+		ETHEREUM_NODE_URL="https://mainnet.infura.io/v3/$INFURA_PROJECT_ID"
 	fi
-	ETHEREUM_NODE_URL="https://mainnet.infura.io/v3/$INFURA_PROJECT_ID"
 fi
 
 if [[ -z $token ]]; then
@@ -212,8 +214,8 @@ result=$(echo "$orders" | jq --argjson a "$accounts_json" "$(cat << EOF
 EOF
 )")
 
-csv () {
-	echo $1 | jq -r '(map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.])) as $rows | $cols, $rows[] | @csv'
+tsv () {
+	echo $1 | jq -r '(map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.])) as $rows | $cols, $rows[] | @tsv'
 }
 
-csv "$result"
+tsv "$result"

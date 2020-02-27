@@ -48,4 +48,4 @@ prices=$(echo $totals | jq 'map(. + {buyPrice:(.sellVolume/.buyVolume), sellPric
 
 prices=$(echo $prices | jq 'map(. + {batchStart: (.batch * 300)|todate, batchEnd: ((.batch+1)*300)|todate})')
 
-echo $prices | jq -r '(map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.])) as $rows | $cols, $rows[] | @csv'
+echo $prices | jq -r '(map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.])) as $rows | $cols, $rows[] | @tsv'
