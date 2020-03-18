@@ -1,18 +1,3 @@
-Utility scrips for querying dfusion graph.
+# :warning: Deprecated :warning:
 
-# `prices.sh`
-
-Gets all historical batches where a solution pair was traded and reports the
-total volumes as well as buy and sell prices in CSV format:
-
-```
-./prices.sh DAI USDC
-```
-
-## Requirements
-
-Install cURL and jq with yout favourite package manager:
-
-```
-sudo apt install curl jq
-```
+This repository has been deprecated in favour of [dex-cli](https://github.com/gnosis/dex-cli). The last working legacy version of this repo can be found [here](https://github.com/gnosis/dex-utils/tree/legacy).
